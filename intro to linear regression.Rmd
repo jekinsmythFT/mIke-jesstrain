@@ -1,0 +1,30 @@
+#Note this requires first running the data cleansing data set to work
+
+So now that we have de qualtricsed the data we can get started on regression!
+
+First of all we need to create a new data set which contains exclusively the data
+which we will use in the regression - and then convert it to numeric
+
+```{r}
+
+regression_ds <- cleands %>% 
+  select(5:12) %>% 
+  mutate(across(everything(), 
+                ~na_if(.x, "I haven't encountered / do not use these"))) %>% 
+  mutate(across(everything(), ~as.numeric(factor(.x, levels = c("1 - Poor",
+                                                                "2",
+                                                                "3",
+                                                                "4",
+                                                                "5 - Excellent")))))
+```
+
+```{r}
+
+  summary(lm(data = regression_ds, formula =
+       journalism_score ~ formats_datavis +
+       formats_videos +
+       formats_podcasts +
+       formats_newsletters +
+       formats_liveblogs +
+       formats_longform))
+```

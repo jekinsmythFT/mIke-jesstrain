@@ -1,0 +1,81 @@
+---
+title: "Intro to linear regression"
+output: html_document
+---
+We start by installing the required packages - as well as the data set
+```{r setup, include=FALSE}
+#install.packages("readr", "tidyverse")
+library(tidyverse)
+library(readr)
+ds <- read_csv("subs survey - jess & Mike to use  - Sheet1.csv")
+```
+
+In order to use the data we first need to clean it to ensure it can be properly used
+Now we take a look at the data 
+
+```{r}
+ds
+```
+
+There is so much wrong with this data - most of the fields are in the wrong
+format, and the names are far too long to be usuable
+
+Time to tidy
+
+```{r}
+cleands <- ds %>% 
+  mutate(date = as.Date(`Recorded Date`, format = "%d/%m/%Y"), #format as date and strip time
+         user_guid = `External Data Reference`, #rename to match bq
+         cover_more = `Which areas of content would you like to see the FT cover more?`,
+         cover_more_topics = `Q7 - Topics`,
+         journalism_score = `Overall, how would you rate our journalism?`,
+         formats_datavis = .$`How would you rate the FT on the following? - Data / Visual Journalism (e.g. charts & graphs)
+
+
+
+1/7`,
+        formats_videos = .$`How would you rate the FT on the following? - Videos
+
+
+
+2/7`,
+        formats_podcasts = .$`How would you rate the FT on the following? - Podcasts
+
+
+
+3/7`,
+        formats_newsletters = .$`How would you rate the FT on the following? - Newsletters
+
+
+
+4/7`,
+        formats_liveblogs = .$`How would you rate the FT on the following? - Live Blogs
+
+
+
+5/7`,
+        formats_longform = .$`How would you rate the FT on the following? - Longform (The Big read)
+
+
+
+6/7`,
+        formats_liveevents = .$`How would you rate the FT on the following? - Live events, either online or in-person (FT Live)
+
+
+
+7/7`) %>% 
+  select(date, 
+         user_guid,
+         cover_more,
+         cover_more_topics,
+         journalism_score,
+         formats_datavis,
+         formats_videos,
+         formats_podcasts,
+         formats_newsletters,
+         formats_liveblogs,
+         formats_longform,
+         formats_liveevents) %>% 
+  mutate(across(5:12, ~factor(.x)))
+```
+
