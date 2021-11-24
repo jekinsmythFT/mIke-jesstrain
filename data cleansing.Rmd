@@ -18,7 +18,7 @@ ds
 ```
 
 There is so much wrong with this data - most of the fields are in the wrong
-format, and the names are far too long to be usuable
+format, and the names are far too long to be usable
 
 Time to tidy
 
@@ -77,5 +77,21 @@ cleands <- ds %>%
          formats_longform,
          formats_liveevents) %>% 
   mutate(across(5:12, ~factor(.x)))
+```
+
+We have now given our variables much cleaner names and told R the types of variables
+we are using
+
+We're nearly there with tidying this data. What's left to do is to remove all test 
+or non unique values. 
+
+As with behavioural data we use the user guids to determine uniqueness and whether 
+the respondent was genuine. For surveys we occasionally get spammers, and there
+is always a chance test / practice responses will find its way into the dataset
+
+```{r}
+cleands <- cleands %>% 
+  drop_na(user_guid) %>% #remove all data without user guids
+  distinct(user_guid, .keep_all = T) #ensure only 1 response per user is taken
 ```
 

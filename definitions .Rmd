@@ -1,0 +1,17 @@
+---
+title: "Definitions of functions"
+output: html_notebook
+---
+
+install.packages() - to install new packages
+library() - loads a package
+read_csv() - to load a csv into r
+<- - used to define a data set
+= - used to define a variable
+%>% pipe operator, basically means "and then do"
+mutate() - lets you create new or edit variables from existing
+as.Date() - transforms a varable into a date format
+.$ specificies a variable from a data set, useful to find long and un tidy names
+across() - applies a function to many variables within a dataset
+factor() - turns a variable into a factor
+as.numeric( - turns a variable into a number)

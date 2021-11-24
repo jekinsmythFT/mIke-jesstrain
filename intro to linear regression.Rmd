@@ -1,12 +1,11 @@
 #Note this requires first running the data cleansing data set to work
 
-So now that we have de qualtricsed the data we can get started on regression!
+So now that we have cleaned the data we can get started on regression!
 
 First of all we need to create a new data set which contains exclusively the data
 which we will use in the regression - and then convert it to numeric
 
 ```{r}
-
 regression_ds <- cleands %>% 
   select(5:12) %>% 
   mutate(across(everything(), 
@@ -16,15 +15,85 @@ regression_ds <- cleands %>%
                                                                 "3",
                                                                 "4",
                                                                 "5 - Excellent")))))
+
+regression_ds
 ```
+Next let's plot these variables alongside journalism to see the sorts of relationships
+we get
+
+```{r}
+regression_ds %>% 
+  pivot_longer(2:8) %>% 
+  drop_na() %>% 
+  group_by(journalism_score, value) %>% 
+  mutate(n = n()) %>% 
+  ungroup() %>% 
+  ggplot(aes(value, journalism_score, fill = n)) +
+  geom_tile() +
+  geom_smooth(method = "lm", se = F, aes(col = name))
+```
+
+We can see from the heat map portion of the chart that the majority of respondents
+gave 4 or 5 for our journalism score, and 3,4 or 5 for the formats. 
+
+It is not surprising then to see the individual formats' regressions lines all 
+start between 3-4 when respondents give 1, and 5 when respondents give 5 for the 
+journalism score.
+
+Due to the high scoring distribution of the respondents, any model created will 
+be weighted towards the higher ranges. This is okay - it is a function that the
+vast majority of our subscribers who use a particular format enjoy it!
+
+However we may consider segmenting low ranged respondents into their own analysis, 
+or perhaps increasing the scale range from a 5 point to 7 or 11 in the future.
+
+Standard linear regression is a regression between an independent variable and one
+dependent variable
+
+Let's look at this using journalism score as our independent and datavis as our 
+dependent
 
 ```{r}
 
-  summary(lm(data = regression_ds, formula =
-       journalism_score ~ formats_datavis +
-       formats_videos +
-       formats_podcasts +
-       formats_newsletters +
-       formats_liveblogs +
-       formats_longform))
+linear_reg_model <- lm(data = regression_ds, formula = journalism_score ~ formats_datavis)
+
+summary(linear_reg_model)
+
+plot(linear_reg_model)
 ```
+Note the smallest variation from 0 for residuals is best. We want the median to 
+be as close to 0 as possible, our median of 0.287 is good. We see in the residuals 
+there is some variation from expected, with the lowest residual at -3.3924 compared
+with the maximum of 1.59. This is visualised on the first plot and shows evidence 
+of left skewing. This means our model is not as good as predicting the lower range
+as it is higher. This can also be seen in the QQ chart (2) whereby the model most
+accurately predicts mid range value and falls off at the more extreme ends, particularly
+the lower.
+
+By looking at the coefficients we can see the model itself - we now know that
+Journalism score = 0.32065 * Data vis score + 3.10981. The std error shows the 
+variation at 95% confidence interval. The t values are calculated form the coefficients
+and the std error and are used to calculate the p value. The p value is the significance
+test which tests to see whether we can statistically see whether the coefficient adds
+to the model. Any p value lower than 0.05 is considered significant. We can see our 
+model is very significant. 
+
+
+Residual standard error is 0.7295 which shows the variation between the regression line 
+and the residuals, which means journalism score can be off by up to 0.795 for an 
+individual. This is not great if we wanted to confidently predict the journalism 
+score for an individual. But do we really care about this?
+
+Our multiple r squared is 0.147 or ~15%. Which means this regression model explains
+15% of the variation. Or in other words satisfaction with data vis explains 15%
+of the variation of journalism score. Which means 85% of users' satisfaction with
+our journalism is explained by other things. We can tell that just using data vis
+is probably not the best way to accurately judge a subscriber's satisfaction with 
+our journalism. 
+
+The final F statistics and it's corresponding p value shows overall whether there 
+is a significant relationship between data vis and journalism score. The higher 
+the F the better, and we can see the p value is highly significant. 
+
+How would you summarise this overall?
+
