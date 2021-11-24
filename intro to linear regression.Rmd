@@ -1,12 +1,11 @@
 #Note this requires first running the data cleansing data set to work
 
-So now that we have de qualtricsed the data we can get started on regression!
+So now that we have cleaned the data we can get started on regression!
 
 First of all we need to create a new data set which contains exclusively the data
 which we will use in the regression - and then convert it to numeric
 
 ```{r}
-
 regression_ds <- cleands %>% 
   select(5:12) %>% 
   mutate(across(everything(), 

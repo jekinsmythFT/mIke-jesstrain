@@ -1,0 +1,46 @@
+---
+title: "Exploration"
+output: html_notebook
+---
+Before starting out on any survey analysis it is always a good idea to explore
+what your data shows.
+
+Let's take a look at the journalistic formats results 
+
+
+```{r}
+journo_formats <- cleands %>% 
+  select(6:12) %>% 
+  pivot_longer(everything()) %>% 
+  group_by(name, value) %>%
+  summarise(n = n())
+
+journo_formats
+
+ggplot(journo_formats, aes(value, n)) +
+  geom_col() +
+  facet_wrap(~name)
+```
+
+We can see that live events has had hardly any responses due to large number of NAs
+
+We also see that live blogs, podcasts, and videos have a high proportions of nas
+as well as do not use these. This is good to keep in mind should we wish to do 
+a regression analysis because they will count as missing data
+
+Let's explore further by looking into what % of users are aware of the particular format
+
+```{r}
+journo_formats %>% 
+  drop_na() %>% 
+  mutate(does_use = if_else(value == "I haven't encountered / do not use these", F, T)) %>% 
+  group_by(name) %>% 
+  summarise(prop = n / sum(n),
+            does_use = does_use) %>% 
+  group_by(does_use, name) %>% 
+  summarise(prop = sum(prop)) %>% 
+  filter(does_use == T) %>% 
+  ggplot(aes(reorder(name, -prop), prop)) +
+  geom_col() +
+  coord_flip()
+```
