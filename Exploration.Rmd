@@ -7,10 +7,7 @@ what your data shows.
 
 Let's take a look at the journalistic formats results 
 
-<<<<<<< HEAD
 Main focus is to work out whether our different journalistic formats impact satisfaction with our journalism 
-=======
->>>>>>> 9afa6d218d26d3d268d828a72fcb7397a248b163
 
 ```{r}
 journo_formats <- cleands %>% 
@@ -44,11 +41,8 @@ journo_formats %>%
   group_by(does_use, name) %>% 
   summarise(prop = sum(prop)) %>% 
   filter(does_use == T) %>% 
-<<<<<<< HEAD
   ggplot(aes(reorder(name, + prop) , prop)) +
-=======
   ggplot(aes(reorder(name, -prop), prop)) +
->>>>>>> 9afa6d218d26d3d268d828a72fcb7397a248b163
   geom_col() +
   coord_flip()
 ```
