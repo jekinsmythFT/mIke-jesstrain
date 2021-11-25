@@ -95,5 +95,6 @@ The final F statistics and it's corresponding p value shows overall whether ther
 is a significant relationship between data vis and journalism score. The higher 
 the F the better, and we can see the p value is highly significant. 
 
-How would you summarise this overall?
+How would you summarise this overall? 
+
 
