@@ -31,6 +31,10 @@ regression_ds %>%
   ggplot(aes(value, journalism_score, fill = n)) +
   geom_tile() +
   geom_smooth(method = "lm", se = F, aes(col = name))
+
+regression_ds %>% 
+  drop_na() %>% 
+  cor()
 ```
 
 We can see from the heat map portion of the chart that the majority of respondents
@@ -95,6 +99,18 @@ The final F statistics and it's corresponding p value shows overall whether ther
 is a significant relationship between data vis and journalism score. The higher 
 the F the better, and we can see the p value is highly significant. 
 
-How would you summarise this overall? 
+How would you summarise this overall?
 
+Multiple regression
 
+```{r}
+
+multiple_reg_model <- lm(data = regression_ds, formula = journalism_score ~ formats_datavis +
+                             formats_longform + formats_newsletters +
+                             formats_videos
+                         )
+
+summary(multiple_reg_model)
+
+plot(multiple_reg_model)
+```
